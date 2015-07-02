@@ -76,6 +76,25 @@ let rec SearchTrie (t:Trie) r c d =
             SearchTrie newWord (r+1) (c-1) (d+1)
             SearchTrie newWord (r+1) (c)   (d+1)
             SearchTrie newWord (r+1) (c+1) (d+1)
+            
+let rec SearchTrieOneDirection (t:Trie) r c rDelta cDelta =
+    if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
+        let nextCh = pad.[r,c]
+        match t.[nextCh] with
+        | None -> ()
+        | Some newWord ->
+            for w in newWord.Words do
+                ignore (matchedWords.Add w)
+            SearchTrieOneDirection newWord (r+rDelta) (c+cDelta) rDelta cDelta
+let rec SearchTrieAllDirections (t:Trie) r c =
+    SearchTrieOneDirection t r c (-1) (-1)
+    SearchTrieOneDirection t r c (-1) (0)  
+    SearchTrieOneDirection t r c (-1) (+1)
+    SearchTrieOneDirection t r c (0)   (-1)
+    SearchTrieOneDirection t r c (0)   (+1)
+    SearchTrieOneDirection t r c (+1) (-1)
+    SearchTrieOneDirection t r c (+1) (0)  
+    SearchTrieOneDirection t r c (+1) (+1)
 
 
 let freq = new Dictionary<char, int>()
@@ -95,7 +114,8 @@ for line in full.Split([|'\r';'\n'|], StringSplitOptions.RemoveEmptyEntries) do
 let trie = BuildTrie words
 for x = 0 to pad.GetLength(0) do
     for y = 0 to pad.GetLength(1) do
-        SearchTrie trie x y 0
+        //SearchTrie trie x y 0
+        SearchTrieAllDirections trie x y 
 
 let sorted = 
     matchedWords
