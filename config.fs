@@ -1,10 +1,12 @@
 module Config
     open System
     
-    let MaxWordListSize = 80
+    let MaxWordListSize = 95
     let IncludedCategories = [
         "english";
         "american";
+        "british";
+        //"canadian";
     ]
     let IncludedSubcategories = [
         // "abbreviations";
