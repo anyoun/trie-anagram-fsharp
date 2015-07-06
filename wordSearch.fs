@@ -114,6 +114,7 @@ try
     let sorted = 
         matchedWords
         |> Seq.filter (fun w -> w.Length >= 6 && w.Length <= 10)
+        |> Seq.filter (fun w -> not (matchedWords |> Seq.exists (fun w2 -> (w2.Contains w) && w2.Length > w.Length ) ))
         |> Seq.sortBy (fun w -> w.Length)
     
     printfn "Matched %d words total, %d filtered" matchedWords.Count (Seq.length sorted)

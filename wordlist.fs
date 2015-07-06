@@ -24,7 +24,7 @@ module WordList
                     let index = Config.LetterToIndex ch
                     index < 0 || index >= 26) 
                 if bad then
-                    printfn "Ignoring word \"%s\"" word
+                    //printfn "Ignoring word \"%s\"" word
                     //let badString = Seq.fold (fun s c -> s+(string c)) "" bad
                     //raise (Config.UnknownCharacter (sprintf "Bad characters: \"%s\" in \"%s\"." badString word) )
                     false  
