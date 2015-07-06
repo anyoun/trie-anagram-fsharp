@@ -3,7 +3,6 @@ open System.Collections.Generic
 open System.IO
 open System.Text
 open System.Text.RegularExpressions
-
 let MAX_DEPTH = 10
 let full = @"
     npwdesLuva
@@ -79,6 +78,15 @@ let rec SearchTrieOneDirection (t:Trie) r c rDelta cDelta =
             for w in newWord.Words do
                 ignore (matchedWords.Add w)
             SearchTrieOneDirection newWord (r+rDelta) (c+cDelta) rDelta cDelta
+            
+let rec PrintOneDirection (word:list<char>) r c rDelta cDelta =
+    if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
+        let nextCh = pad.[r,c]
+        PrintOneDirection (nextCh::word) (r+rDelta) (c+cDelta) rDelta cDelta
+    else if (Seq.length word) >= 10 then
+        let str = word |> Array.ofSeq |> Array.rev |> Seq.fold (fun s c -> s+(string c)) ""
+        printfn "Found: %s" str
+            
 let rec SearchTrieAllDirections (t:Trie) r c =
     SearchTrieOneDirection t r c (-1) (-1)
     SearchTrieOneDirection t r c (-1) (0)  
@@ -88,6 +96,16 @@ let rec SearchTrieAllDirections (t:Trie) r c =
     SearchTrieOneDirection t r c (+1) (-1)
     SearchTrieOneDirection t r c (+1) (0)  
     SearchTrieOneDirection t r c (+1) (+1)
+    
+let rec PrintAllDirections r c =
+    PrintOneDirection [] r c (-1) (-1)
+    PrintOneDirection [] r c (-1) (0)  
+    PrintOneDirection [] r c (-1) (+1)
+    PrintOneDirection [] r c (0)   (-1)
+    PrintOneDirection [] r c (0)   (+1)
+    PrintOneDirection [] r c (+1) (-1)
+    PrintOneDirection [] r c (+1) (0)  
+    PrintOneDirection [] r c (+1) (+1)
 
 
 let freq = new Dictionary<char, int>()
@@ -106,14 +124,18 @@ for line in full.Split([|'\r';'\n'|], StringSplitOptions.RemoveEmptyEntries) do
 
 try 
     let trie = BuildTrie words
-    for x = 0 to pad.GetLength(0) do
-        for y = 0 to pad.GetLength(1) do
+    // System.Threading.Thread.Sleep (TimeSpan.FromSeconds 20.0)
+    for x = 0 to pad.GetLength(0)-1 do
+        for y = 0 to pad.GetLength(1)-1 do
             //SearchTrie trie x y 0
-            SearchTrieAllDirections trie x y 
+            SearchTrieAllDirections trie x y
+            //if pad.[x,y] = 'm' then
+            //     PrintAllDirections x y
     
     let sorted = 
         matchedWords
         |> Seq.filter (fun w -> w.Length >= 6 && w.Length <= 10)
+        //|> Seq.filter (fun w -> w.StartsWith "p")
         |> Seq.filter (fun w -> not (matchedWords |> Seq.exists (fun w2 -> (w2.Contains w) && w2.Length > w.Length ) ))
         |> Seq.sortBy (fun w -> w.Length)
     

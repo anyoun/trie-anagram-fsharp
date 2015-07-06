@@ -33,7 +33,7 @@
 	"command": "Fsc.exe",
 	"isShellCommand": true,
 	"showOutput": "silent",
-	"args": ["config.fs", "wordlist.fs", "wordSearch.fs", "--nologo", "--fullpaths"],
+	"args": ["config.fs", "wordlist.fs", "wordSearch.fs", "--nologo", "--fullpaths", "--debug"],
 	"problemMatcher": [
 				"$msCompile",
 				"$lessCompile"
