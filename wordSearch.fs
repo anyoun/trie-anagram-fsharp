@@ -23,20 +23,13 @@ let full = @"
     famtnadixo"
 let pad = Array2D.create 15 10 ' '
 let padT =  Array2D.create 10 15 ' '
-let words = query {
-    for l in File.ReadLines @"c:\Users\will.thomas\Downloads\hunspell-en_US-2015.05.18\en_US.dic" do
-    let m = Regex.Match(l, @"^([a-z]+)(/.*)$")
-    where (m.Success)
-    let word = m.Groups.[1].Value.ToLower()
-    select word
-}
+let words = WordList.AllWords
 
 type Trie() =
     let children = Array.create<Trie option> 26 None
-    let cvt c = (int (Char.ToUpper c)) - (int 'A')
     member this.Item
-        with get(ch) = children.[cvt(ch)]
-        and set ch value = children.[cvt(ch)] <- value
+        with get(ch) = children.[Config.LetterToIndex(ch)]
+        and set ch value = children.[Config.LetterToIndex(ch)] <- value
     member val Words = new HashSet<string>()
     
 let BuildTrie wordList = 
@@ -111,18 +104,20 @@ for line in full.Split([|'\r';'\n'|], StringSplitOptions.RemoveEmptyEntries) do
         count <- count + 1
     r <- r + 1
 
-let trie = BuildTrie words
-for x = 0 to pad.GetLength(0) do
-    for y = 0 to pad.GetLength(1) do
-        //SearchTrie trie x y 0
-        SearchTrieAllDirections trie x y 
-
-let sorted = 
-    matchedWords
-    |> Seq.filter (fun w -> w.Length >= 6 && w.Length <= 10)
-    |> Seq.sortBy (fun w -> w.Length)
-
-printfn "Matched %d words total, %d filtered" matchedWords.Count (Seq.length sorted)
-for w in sorted do
-    printfn "%s" w
-
+try 
+    let trie = BuildTrie words
+    for x = 0 to pad.GetLength(0) do
+        for y = 0 to pad.GetLength(1) do
+            //SearchTrie trie x y 0
+            SearchTrieAllDirections trie x y 
+    
+    let sorted = 
+        matchedWords
+        |> Seq.filter (fun w -> w.Length >= 6 && w.Length <= 10)
+        |> Seq.sortBy (fun w -> w.Length)
+    
+    printfn "Matched %d words total, %d filtered" matchedWords.Count (Seq.length sorted)
+    for w in sorted do
+        printfn "%s" w
+with
+    | Config.UnknownCharacter(s) -> printfn "Failed: %s" s
