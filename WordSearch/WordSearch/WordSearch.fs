@@ -25,42 +25,17 @@ let full = @"
 let pad = Array2D.create 15 10 ' '
 let padT =  Array2D.create 10 15 ' '
 let words = WordList.AllWords
-
-type Trie() =
-    let children = Array.create<Trie option> 26 None
-    member this.Item
-        with get(ch) = children.[Config.LetterToIndex(ch)]
-        and set ch value = children.[Config.LetterToIndex(ch)] <- value
-    member val Words = new HashSet<string>()
-    
-let BuildTrie wordList = 
-    let root = new Trie()
-    let mutable wordCount = 0
-    for word in wordList do
-        let mutable n = root
-        for c in word do
-            n <- 
-                match n.[c] with
-                | None -> 
-                    let x = new Trie()
-                    n.[c] <- Some x
-                    x
-                | Some x -> x
-        if n.Words.Add word then
-            wordCount <- wordCount + 1
-    printfn "Loaded %d words" wordCount
-    root
     
 let matchedWords = new HashSet<string>()
     
-let rec SearchTrie (t:Trie) r c d =
+let rec SearchTrie (t:Trie.Node) r c d =
     if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
         let nextCh = pad.[r,c]
         match t.[nextCh] with
         | None -> ()
         | Some newWord ->
             for w in newWord.Words do
-                ignore (matchedWords.Add w)
+                ignore (matchedWords.Add w.Word)
             
             SearchTrie newWord (r-1) (c-1) (d+1)
             SearchTrie newWord (r-1) (c)   (d+1)
@@ -71,14 +46,14 @@ let rec SearchTrie (t:Trie) r c d =
             SearchTrie newWord (r+1) (c)   (d+1)
             SearchTrie newWord (r+1) (c+1) (d+1)
             
-let rec SearchTrieOneDirection (t:Trie) r c rDelta cDelta =
+let rec SearchTrieOneDirection (t:Trie.Node) r c rDelta cDelta =
     if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
         let nextCh = pad.[r,c]
         match t.[nextCh] with
         | None -> ()
         | Some newWord ->
             for w in newWord.Words do
-                ignore (matchedWords.Add w)
+                ignore (matchedWords.Add w.Word)
             SearchTrieOneDirection newWord (r+rDelta) (c+cDelta) rDelta cDelta
             
 let rec PrintOneDirection (word:list<char>) r c rDelta cDelta =
@@ -89,7 +64,7 @@ let rec PrintOneDirection (word:list<char>) r c rDelta cDelta =
         let str = word |> Array.ofSeq |> Array.rev |> Seq.fold (fun s c -> s+(string c)) ""
         printfn "Found: %s" str
             
-let rec SearchTrieAllDirections (t:Trie) r c =
+let rec SearchTrieAllDirections (t:Trie.Node) r c =
     SearchTrieOneDirection t r c (-1) (-1)
     SearchTrieOneDirection t r c (-1) (0)  
     SearchTrieOneDirection t r c (-1) (+1)
@@ -127,7 +102,7 @@ for line in full.Split([|'\r';'\n'|], StringSplitOptions.RemoveEmptyEntries) do
 
 let RunWordSearch () =
     try 
-        let trie = BuildTrie words
+        let trie = Trie.BuildTrie words
         // System.Threading.Thread.Sleep (TimeSpan.FromSeconds 20.0)
         for x = 0 to pad.GetLength(0)-1 do
             for y = 0 to pad.GetLength(1)-1 do

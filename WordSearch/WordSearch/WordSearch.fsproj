@@ -50,8 +50,10 @@
   <ItemGroup>
     <Compile Include="Config.fs" />
     <Compile Include="WordList.fs" />
+    <Compile Include="Trie.fs" />
     <Compile Include="WordSearch.fs" />
     <None Include="App.config" />
+    <Compile Include="Anagram.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <PropertyGroup>
