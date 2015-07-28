@@ -49,3 +49,6 @@ let rec findAnagrams (root:Trie.Node) (node:Trie.Node option) (nextChars:list<ch
       newWordSets <- Set.union newWordSets (findAnagrams root nextNode xs skippedChars wildCardsLeft (depth+1))
 
   newWordSets
+
+let anagram root chars wildCards =
+  findAnagrams root (Some root) (List.ofSeq chars |> List.sort) [] wildCards 0

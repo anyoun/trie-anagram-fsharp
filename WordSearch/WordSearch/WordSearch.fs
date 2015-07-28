@@ -25,9 +25,9 @@ let full = @"
 let pad = Array2D.create 15 10 ' '
 let padT =  Array2D.create 10 15 ' '
 let words = WordList.AllWords
-    
+
 let matchedWords = new HashSet<string>()
-    
+
 let rec SearchTrie (t:Trie.Node) r c d =
     if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
         let nextCh = pad.[r,c]
@@ -36,7 +36,7 @@ let rec SearchTrie (t:Trie.Node) r c d =
         | Some newWord ->
             for w in newWord.Words do
                 ignore (matchedWords.Add w.Word)
-            
+
             SearchTrie newWord (r-1) (c-1) (d+1)
             SearchTrie newWord (r-1) (c)   (d+1)
             SearchTrie newWord (r-1) (c+1) (d+1)
@@ -45,7 +45,7 @@ let rec SearchTrie (t:Trie.Node) r c d =
             SearchTrie newWord (r+1) (c-1) (d+1)
             SearchTrie newWord (r+1) (c)   (d+1)
             SearchTrie newWord (r+1) (c+1) (d+1)
-            
+
 let rec SearchTrieOneDirection (t:Trie.Node) r c rDelta cDelta =
     if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
         let nextCh = pad.[r,c]
@@ -55,7 +55,7 @@ let rec SearchTrieOneDirection (t:Trie.Node) r c rDelta cDelta =
             for w in newWord.Words do
                 ignore (matchedWords.Add w.Word)
             SearchTrieOneDirection newWord (r+rDelta) (c+cDelta) rDelta cDelta
-            
+
 let rec PrintOneDirection (word:list<char>) r c rDelta cDelta =
     if r >= 0 && c >= 0 && r < pad.GetLength(0) && c < pad.GetLength(1) then
         let nextCh = pad.[r,c]
@@ -63,25 +63,25 @@ let rec PrintOneDirection (word:list<char>) r c rDelta cDelta =
     else if (Seq.length word) >= 10 then
         let str = word |> Array.ofSeq |> Array.rev |> Seq.fold (fun s c -> s+(string c)) ""
         printfn "Found: %s" str
-            
+
 let rec SearchTrieAllDirections (t:Trie.Node) r c =
     SearchTrieOneDirection t r c (-1) (-1)
-    SearchTrieOneDirection t r c (-1) (0)  
+    SearchTrieOneDirection t r c (-1) (0)
     SearchTrieOneDirection t r c (-1) (+1)
     SearchTrieOneDirection t r c (0)   (-1)
     SearchTrieOneDirection t r c (0)   (+1)
     SearchTrieOneDirection t r c (+1) (-1)
-    SearchTrieOneDirection t r c (+1) (0)  
+    SearchTrieOneDirection t r c (+1) (0)
     SearchTrieOneDirection t r c (+1) (+1)
-    
+
 let rec PrintAllDirections r c =
     PrintOneDirection [] r c (-1) (-1)
-    PrintOneDirection [] r c (-1) (0)  
+    PrintOneDirection [] r c (-1) (0)
     PrintOneDirection [] r c (-1) (+1)
     PrintOneDirection [] r c (0)   (-1)
     PrintOneDirection [] r c (0)   (+1)
     PrintOneDirection [] r c (+1) (-1)
-    PrintOneDirection [] r c (+1) (0)  
+    PrintOneDirection [] r c (+1) (0)
     PrintOneDirection [] r c (+1) (+1)
 
 
@@ -101,7 +101,7 @@ for line in full.Split([|'\r';'\n'|], StringSplitOptions.RemoveEmptyEntries) do
 
 
 let RunWordSearch () =
-    try 
+    try
         let trie = Trie.BuildTrie words
         // System.Threading.Thread.Sleep (TimeSpan.FromSeconds 20.0)
         for x = 0 to pad.GetLength(0)-1 do
@@ -110,14 +110,14 @@ let RunWordSearch () =
                 SearchTrieAllDirections trie x y
                 //if pad.[x,y] = 'm' then
                 //     PrintAllDirections x y
-    
-        let sorted = 
+
+        let sorted =
             matchedWords
             |> Seq.filter (fun w -> w.Length >= 6 && w.Length <= 10)
             //|> Seq.filter (fun w -> w.StartsWith "p")
             |> Seq.filter (fun w -> not (matchedWords |> Seq.exists (fun w2 -> (w2.Contains w) && w2.Length > w.Length ) ))
             |> Seq.sortBy (fun w -> w.Length)
-    
+
         printfn "Matched %d words total, %d filtered" matchedWords.Count (Seq.length sorted)
         for w in sorted do
             printfn "%s" w
