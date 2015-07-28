@@ -8,18 +8,18 @@ type Node() =
     member this.Item
         with get(ch) = children.[Config.LetterToIndex(ch)]
         and set ch value = children.[Config.LetterToIndex(ch)] <- value
-    member val Words = new HashSet<Word>()
-    member this.Children = children |> Seq.choose (fun x -> x) 
-    
-let BuildTrie (wordList:seq<Word>) = 
+    member val Words = new System.Collections.Generic.HashSet<Word>()
+    member this.Children = children |> Seq.choose (fun x -> x)
+
+let BuildTrie (wordList:seq<Word>) =
     let root = new Node()
     let mutable wordCount = 0
     for word in wordList do
         let mutable n = root
         for c in word.Word do
-            n <- 
+            n <-
                 match n.[c] with
-                | None -> 
+                | None ->
                     let x = new Node()
                     n.[c] <- Some x
                     x
