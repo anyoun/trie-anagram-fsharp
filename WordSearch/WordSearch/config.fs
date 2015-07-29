@@ -1,8 +1,9 @@
 module Config
 
 open System
-    
+
 let MaxWordListSize = 95
+let TraceLookup = true
 let IncludedCategories = [
     "english";
     "american";
@@ -46,7 +47,7 @@ let allowed_two_letter = set [
 let LetterToIndex c = (int (Char.ToUpper c)) - (int 'A')
 let hasBadChars word = word |> Seq.exists (fun ch ->
     let index = LetterToIndex ch
-    index < 0 || index >= 26) 
+    index < 0 || index >= 26)
 
 let AllowWord (word:string) =
     not (

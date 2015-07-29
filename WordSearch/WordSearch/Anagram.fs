@@ -17,7 +17,11 @@ let crossUnion2 xSet ySet =
   crossJoin xSet ySet
   |> Seq.map (fun (x,y) -> Set.union x y)
 
-let rec findAnagrams (root:Trie.Node) (node:Trie.Node option) (nextChars:list<char>) (skippedChars:list<char>) wildCardsLeft depth=
+let rec findAnagrams (root:Trie.Node) (node:Trie.Node option) (nextChars:list<char>) (skippedChars:list<char>) wildCardsLeft depth =
+  if depth = 100 then
+    raise (System.Exception "Depth is too large")
+  if Config.TraceLookup then
+    printfn "%sLeft: %s Skipped %s" (String.replicate depth " ") (string nextChars) (string skippedChars)
   let originalNode = node
   let remainingStr = ""
   let skippedStr = ""
@@ -25,12 +29,14 @@ let rec findAnagrams (root:Trie.Node) (node:Trie.Node option) (nextChars:list<ch
   match node with
   | None -> ()
   | Some n ->
-    let newCharNode = combineSortChars nextChars skippedChars
-    let newWords = Set ( n.Words |> Seq.map (fun w -> Set [w]) )
-    //if Config.Settings.traceLookup then
-      //printfn "%sFound: %s, continuing with %s" (depth*" ") node.words newCharNode
-    let res = findAnagrams root (Some root) newCharNode [] wildCardsLeft (depth+1)
-    newWordSets <- crossUnion newWords res
+    if n.Words.Count > 0 then
+      let newCharNode = combineSortChars nextChars skippedChars
+      let newWords = Set ( n.Words |> Seq.map (fun w -> Set [w]) )
+      if Config.TraceLookup then
+        let words = n.Words |> Seq.map (fun w -> w.Word) |> String.concat " "
+        printfn "%sFound: %s, continuing with %s" (String.replicate depth " ")  words (string newCharNode)
+      let res = findAnagrams root (Some root) newCharNode [] wildCardsLeft (depth+1)
+      newWordSets <- crossUnion newWords res
 
     if wildCardsLeft > 0 then
       for n in n.Children do
@@ -46,6 +52,8 @@ let rec findAnagrams (root:Trie.Node) (node:Trie.Node option) (nextChars:list<ch
     | None -> ()
     | Some n ->
       let nextNode = n.[x]
+      if Config.TraceLookup then
+        printfn "%sMatched char %c" (String.replicate depth " ") x
       newWordSets <- Set.union newWordSets (findAnagrams root nextNode xs skippedChars wildCardsLeft (depth+1))
 
   newWordSets
