@@ -50,14 +50,15 @@ Target "Test" (fun _ ->
 //)
 
 Target "Default" (fun _ ->
-    trace "Hello World from FAKE"
+    ()
+    //trace "Hello World from FAKE"
 )
 
 // Dependencies
 "Clean"
   ==> "BuildApp"
-  //==> "BuildTest"
-  //==> "Test"
+  ==> "BuildTest"
+  ==> "Test"
   //==> "Zip"
 
 "BuildAppDebug"
