@@ -7,7 +7,12 @@ open System.Text
 open System.Text.RegularExpressions
 open Config
 
-type Word = { Word : string; Rarity : int; Category : string; Subcategory : string; }
+type Word = {
+  Word : string;
+  //Rarity : int;
+  //Category : string;
+  //Subcategory : string;
+}
 
 let basePath = @"scowl_word_lists"
 
@@ -24,7 +29,12 @@ let readAllFiles () =
               printfn "Reading %s" path
             File.ReadLines path
             |> Seq.filter Config.AllowWord
-            |> Seq.map (fun line -> { Word= line.Trim().ToLower(); Rarity= size; Category=category; Subcategory=subcategory } ))
+            |> Seq.map (fun line -> {
+                                      Word = line.Trim().ToLower();
+                                      //Rarity= size;
+                                      //Category=category;
+                                      //Subcategory=subcategory
+                                    } ))
 
 let getCharFreq words =
     words
