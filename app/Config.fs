@@ -2,7 +2,7 @@ module Config
 
 open System
 
-let MaxWordListSize = 20
+let MaxWordListSize = 50
 let TraceLookup = false
 let IncludedCategories = [
     "english";
