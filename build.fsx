@@ -18,30 +18,30 @@ Target "Clean" (fun _ ->
 )
 
 Target "BuildApp" (fun _ ->
-   !! "**/*.fsproj"
+   !! "app/*.fsproj"
      |> MSBuildRelease buildDir "Build"
      |> Log "AppBuild-Output: "
 )
 
 Target "BuildAppDebug" (fun _ ->
-   !! "**/*.fsproj"
+   !! "app/*.fsproj"
      |> MSBuildDebug buildDir "Build"
      |> Log "AppBuild-Output: "
 )
 
-//Target "BuildTest" (fun _ ->
-//    !! "src/test/**/*.csproj"
-//      |> MSBuildDebug testDir "Build"
-//      |> Log "TestBuild-Output: "
-//)
-//
-//Target "Test" (fun _ ->
-//    !! (testDir + "/NUnit.Test.*.dll")
-//      |> NUnit (fun p ->
-//          {p with
-//             DisableShadowCopy = true;
-//             OutputFile = testDir + "TestResults.xml" })
-//)
+Target "BuildTest" (fun _ ->
+    !! "test/*.csproj"
+      |> MSBuildDebug testDir "Build"
+      |> Log "TestBuild-Output: "
+)
+
+Target "Test" (fun _ ->
+    !! (testDir + "/NUnit.Test.*.dll")
+      |> NUnit (fun p ->
+          {p with
+             DisableShadowCopy = true;
+             OutputFile = testDir + "TestResults.xml" })
+)
 
 //Target "Zip" (fun _ ->
 //    !! (buildDir + "/**/*.*")

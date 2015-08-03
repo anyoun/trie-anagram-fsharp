@@ -9,7 +9,7 @@ open Config
 
 type Word = { Word : string; Rarity : int; Category : string; Subcategory : string; }
 
-let basePath = @"../scowl_word_lists"
+let basePath = @"scowl_word_lists"
 
 let readAllFiles () =
         let crossJoin xList yList = xList |> Seq.collect (fun x -> yList |> Seq.map (fun y -> (x,y)))
