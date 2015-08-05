@@ -19,7 +19,7 @@ type AnagramService() =
     member this.Any (req:AnagramRequest) =
       { Result =
         Anagram.anagram CachedTrie req.Name 0
-          |> Seq.sortBy (fun r -> -r.Count)
+          |> Seq.sortBy (fun r -> r.Count)
           |> Seq.choose (fun r ->
             let matchLen = r |> Seq.sumBy (fun w -> w.Word.Length)
             if matchLen = req.Name.Length then
