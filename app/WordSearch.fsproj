@@ -45,23 +45,23 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack">
-      <HintPath>../lib/ServiceStack.4.0.42/lib/net40/ServiceStack.dll</HintPath>
+      <HintPath>../lib/ServiceStack/lib/net40/ServiceStack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Common">
-      <HintPath>../lib/ServiceStack.Common.4.0.42/lib/net40/ServiceStack.Common.dll</HintPath>
+      <HintPath>../lib/ServiceStack.Common/lib/net40/ServiceStack.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Client">
-      <HintPath>../lib/ServiceStack.Client.4.0.42/lib/net40/ServiceStack.Client.dll</HintPath>
+      <HintPath>../lib/ServiceStack.Client/lib/net40/ServiceStack.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Text">
-      <HintPath>../lib/ServiceStack.Text.4.0.42/lib/net40/ServiceStack.Text.dll</HintPath>
+      <HintPath>../lib/ServiceStack.Text/lib/net40/ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ServiceStack.Interfaces">
-      <HintPath>../lib/ServiceStack.Interfaces.4.0.42/lib/portable-wp80+sl5+net40+win8+monotouch+monoandroid+xamarin.ios10/ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>../lib/ServiceStack.Interfaces/lib/portable-wp80+sl5+net40+win8+monotouch+monoandroid+xamarin.ios10/ServiceStack.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
